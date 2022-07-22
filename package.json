@@ -1,7 +1,7 @@
 {
   "name": "starbuccaneer",
   "description": "Keep your wifi connectivity alive at Starbucks in Japan.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "bin": {
     "starbuccaneer": "src/starbuccaneer.js"
   },
