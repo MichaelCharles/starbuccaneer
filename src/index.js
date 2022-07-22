@@ -77,10 +77,8 @@ async function attemptConnection() {
   }
 }
 
-async function main() {
+module.exports = async function main() {
   console.log("Started...");
   attemptConnection();
   setInterval(attemptConnection, 1000 * 60);
-}
-
-main();
+};

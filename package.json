@@ -1,11 +1,23 @@
 {
   "name": "starbuccaneer",
-  "scripts": {
-    "start": "node src/index.js"
+  "description": "Keep your wifi connectivity alive at Starbucks in Japan.",
+  "version": "0.0.4",
+  "bin": {
+    "starbuccaneer": "src/starbuccaneer.js"
   },
-  "version": "0.0.3",
+  "keywords": [
+    "starbucks",
+    "wifi"
+  ],
+  "author": "Michael Charles Aubrey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcaubrey/starbuccaneer/issues"
+  },
+  "homepage": "https://github.com/mcaubrey/starbuccaneer",
   "module": "src/index.js",
   "dependencies": {
+    "commander": "^9.4.0",
     "getmac": "^5.20.0",
     "node-wifi": "^2.0.16",
     "puppeteer": "^15.5.0"
