@@ -1,38 +1,33 @@
 const puppeteer = require("puppeteer");
-const fs = require("fs");
+const getmac = require("getmac").default;
 
-async function getAllCookies(page) {
-  try {
-    const client = await page.target().createCDPSession();
-    const allBrowserCookies = (await client.send("Network.getAllCookies"))
-      .cookies;
-    const cookiePath = "./cookies.json";
-    fs.writeFileSync(cookiePath, JSON.stringify(allBrowserCookies, null, 2));
-  } catch (err) {
-    // do nothing
-    console.log(err);
-  }
-}
-
-async function setAllCookies(page) {
-  try {
-    const cookiePath = "./cookies.json";
-    const cookiesString = fs.readFileSync(cookiePath);
-    const cookies = JSON.parse(cookiesString);
-    await page.setCookie(...cookies);
-  } catch (err) {
-    // do nothing
-    console.log(err);
-  }
-}
-
-async function main() {
+async function attemptConnection() {
+  console.log("Attempting connection...");
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
-    await page.goto(`https://service.wi2.ne.jp/freewifi/starbucks/index.html`);
 
-    await getAllCookies(page);
+    await Promise.all([
+      page.waitForNavigation(),
+      await page.goto(
+        `https://service.wi2.ne.jp/wi2auth/redirect?cmd=login&mac=${getmac()}&essid=%20&apname=tunnel%201&apgroup=&url=http%3A%2F%2Fexample%2Ecom%2F%3F${Math.floor(
+          Math.random() * 999999999
+        )}`
+      ),
+    ]);
+
+    const afterRedirectTitle = await page.evaluate(() => {
+      return document.title;
+    });
+
+    if (
+      afterRedirectTitle === "logged in" ||
+      afterRedirectTitle === "at_STARBUCKS_Wi2"
+    ) {
+      console.log("Already logged in.");
+      await browser.close();
+      return;
+    }
 
     console.log("Page loaded, clicking on CONNECT...");
     await Promise.all([
@@ -40,19 +35,27 @@ async function main() {
       page.click('input[type="submit"]'),
     ]);
 
-    await setAllCookies(page);
-
     console.log("Reading terms of use...");
     await page.waitForTimeout(2000);
 
     console.log("And clicking on agree...");
+    let buttonAcceptWorked = false;
     await Promise.all([
       page.waitForNavigation(),
-      page.$eval(`#button_accept`, (element) => element.click()),
-      setTimeout(async () => {
-        console.log("Attempting 'Retry'...");
-        page.$eval(`#alertArea a`, (element) => element.click());
-      }, 5000),
+      new Promise(async (resolve) => {
+        await page.$eval(`#button_accept`, (element) => element.click());
+        buttonAcceptWorked = true;
+        resolve();
+      }),
+      new Promise((resolve) => {
+        setTimeout(async () => {
+          if (!buttonAcceptWorked) {
+            console.log("Attempting 'Retry'...");
+            page.$eval(`#alertArea a`, (element) => element.click());
+          }
+          resolve();
+        }, 5000);
+      }),
     ]);
 
     const title = await page.evaluate(() => {
@@ -61,7 +64,7 @@ async function main() {
 
     console.log(`Navigated to ${title}`);
 
-    if (title === "logged in") {
+    if (title === "logged in" || title === "at_STARBUCKS_Wi2") {
       console.log("Automatic login successful.");
     } else {
       console.log("Automatic login failed.");
@@ -70,8 +73,14 @@ async function main() {
   } catch (e) {
     console.log("Automatic login failed.");
     console.log(e.message);
-    browser.close();
+    await browser.close();
   }
+}
+
+async function main() {
+  console.log("Started...");
+  attemptConnection();
+  setInterval(attemptConnection, 1000 * 60);
 }
 
 main();

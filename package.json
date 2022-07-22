@@ -6,8 +6,8 @@
   "version": "0.0.3",
   "module": "src/index.js",
   "dependencies": {
-    "puppeteer": "^15.5.0",
-    "chrome-aws-lambda": "^10.0.0",
-    "puppeteer-core": "^10.0.0"
+    "getmac": "^5.20.0",
+    "node-wifi": "^2.0.16",
+    "puppeteer": "^15.5.0"
   }
 }
