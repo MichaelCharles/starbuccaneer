@@ -27,7 +27,7 @@ async function setAllCookies(page) {
 }
 
 async function main() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
     await page.goto(`https://service.wi2.ne.jp/freewifi/starbucks/index.html`);
