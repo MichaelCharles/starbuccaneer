@@ -1,7 +1,7 @@
 {
   "name": "starbuccaneer",
   "description": "Keep your wifi connectivity alive at Starbucks in Japan.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "bin": {
     "starbuccaneer": "src/starbuccaneer.js"
   },
@@ -19,7 +19,6 @@
   "dependencies": {
     "commander": "^9.4.0",
     "getmac": "^5.20.0",
-    "node-wifi": "^2.0.16",
     "puppeteer": "^15.5.0"
   }
 }
