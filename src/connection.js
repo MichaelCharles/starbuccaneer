@@ -1,8 +1,9 @@
-const puppeteer = require("puppeteer");
-const getmac = require("getmac").default;
+import puppeteer from "puppeteer";
+import getmac from "getmac";
+import lib from "./lib.js";
 
-async function attemptConnection() {
-  console.log("Attempting connection...");
+export async function attemptConnection() {
+  lib.log("Attempting connection...");
   const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
@@ -24,21 +25,23 @@ async function attemptConnection() {
       afterRedirectTitle === "logged in" ||
       afterRedirectTitle === "at_STARBUCKS_Wi2"
     ) {
-      console.log("Already logged in.");
+      lib.log("Already logged in.");
+      await (async () =>
+        new Promise((resolve) => setTimeout(resolve, 60000)))();
       await browser.close();
       return;
     }
 
-    console.log("Page loaded, clicking on CONNECT...");
+    lib.log("Page loaded, clicking on CONNECT...");
     await Promise.all([
       page.waitForNavigation(),
       page.click('input[type="submit"]'),
     ]);
 
-    console.log("Reading terms of use...");
+    lib.log("Reading terms of use...");
     await page.waitForTimeout(2000);
 
-    console.log("And clicking on agree...");
+    lib.log("And clicking on agree...");
     let buttonAcceptWorked = false;
     await Promise.all([
       page.waitForNavigation(),
@@ -50,7 +53,7 @@ async function attemptConnection() {
       new Promise((resolve) => {
         setTimeout(async () => {
           if (!buttonAcceptWorked) {
-            console.log("Attempting 'Retry'...");
+            lib.log("Attempting 'Retry'...");
             page.$eval(`#alertArea a`, (element) => element.click());
           }
           resolve();
@@ -62,23 +65,28 @@ async function attemptConnection() {
       return document.title;
     });
 
-    console.log(`Navigated to ${title}`);
+    lib.log(`Navigated to ${title}`);
 
     if (title === "logged in" || title === "at_STARBUCKS_Wi2") {
-      console.log("Automatic login successful.");
+      lib.log("Automatic login successful.");
+      await (async () =>
+        new Promise((resolve) => setTimeout(resolve, 60000)))();
     } else {
-      console.log("Automatic login failed.");
+      lib.log("Automatic login failed.");
+      await (async () =>
+        new Promise((resolve) => setTimeout(resolve, 60000)))();
     }
     await browser.close();
   } catch (e) {
-    console.log("Automatic login failed.");
-    console.log(e.message);
+    lib.log("Automatic login failed.");
+    await (async () => new Promise((resolve) => setTimeout(resolve, 60000)))();
+    lib.log(e.message);
     await browser.close();
   }
 }
 
-module.exports = async function main() {
-  console.log("Started...");
+export default async function main() {
+  lib.log("Started...");
   attemptConnection();
   setInterval(attemptConnection, 1000 * 60);
-};
+}
