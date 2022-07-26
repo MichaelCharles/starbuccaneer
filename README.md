@@ -1,5 +1,7 @@
 # スタバカニア (Starbuccaneer)
 
+[![NPM](https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/starbuccaneer)
+
 ## 日本語の説明書
 
 日本のスタバでのみ動作します。
