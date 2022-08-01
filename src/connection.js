@@ -72,15 +72,18 @@ export async function attemptConnection() {
       await (async () =>
         new Promise((resolve) => setTimeout(resolve, 60000)))();
     } else {
-      lib.log("Automatic login failed.");
+      lib.log(
+        "Automatic login failed. " +
+          `Title was ${title}. Expected 'logged in' or 'at_STARBUCKS_Wi2'.`
+      );
       await (async () =>
         new Promise((resolve) => setTimeout(resolve, 60000)))();
     }
     await browser.close();
   } catch (e) {
-    lib.log("Automatic login failed.");
-    await (async () => new Promise((resolve) => setTimeout(resolve, 60000)))();
+    lib.log("Automatic login failed with error.");
     lib.log(e.message);
+    await (async () => new Promise((resolve) => setTimeout(resolve, 60000)))();
     await browser.close();
   }
 }
