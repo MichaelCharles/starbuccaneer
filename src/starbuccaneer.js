@@ -13,7 +13,14 @@ const packageJsonPath = path.join(__dirname, "../package.json");
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath).toString());
 
-program.version(packageJson.version);
+program
+  .name("Starbuccaneer")
+  .description(
+    "A utility to keep you connected to Starbucks Wifi at Starbucks in Japan."
+  )
+  .version(packageJson.version);
+
+program.parse();
 
 lib.log("Started...");
 healthCheck();

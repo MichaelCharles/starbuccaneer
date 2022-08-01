@@ -18,8 +18,10 @@ const tryFetching = async (bottle) => {
   bottle.message = message;
 };
 
-const main = async () => {
-  lib.log("Checking connectivity...");
+const main = async (announceActivity = true) => {
+  if (announceActivity) {
+    lib.log("Checking connectivity...");
+  }
   const bottle = {};
   try {
     await Promise.race([tryFetching(bottle), wait()]);
@@ -31,9 +33,12 @@ const main = async () => {
   }
 
   if (bottle.message && bottle.message === "ahoy matey") {
-    lib.log("No connectivity problems detected.");
+    if (announceActivity) {
+      lib.log("No connectivity problems detected.");
+      lib.log("Will continue to quietly check connectivity...");
+    }
     await (async () => new Promise((resolve) => setTimeout(resolve, 10000)))();
-    await main();
+    await main(false);
   } else {
     lib.log("Health check timeout.");
     await attemptConnection();
