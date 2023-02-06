@@ -4,9 +4,13 @@ import getmac from "getmac";
 import crypto from "crypto";
 import lib from "./lib.js";
 
+interface Bottle {
+  message: string;
+}
+
 const wait = async () => new Promise((resolve) => setTimeout(resolve, 10000));
 
-const tryFetching = async (bottle) => {
+const tryFetching = async (bottle: Bottle) => {
   const user = crypto.createHash("md5").update(getmac()).digest("hex");
   // This does not send me your MAC address (not that I could do much with it anyway.)
   // It sends me a hash of it, and I'm using that to keep track of how many people
@@ -22,7 +26,7 @@ const main = async (announceActivity = true) => {
   if (announceActivity) {
     lib.log("Checking connectivity...");
   }
-  const bottle = {};
+  const bottle: Bottle = { message: "" };
   try {
     await Promise.race([tryFetching(bottle), wait()]);
   } catch (e) {

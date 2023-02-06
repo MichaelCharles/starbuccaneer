@@ -1,4 +1,4 @@
-export const log = (message) => {
+export const log = (message: string) => {
   console.log(
     `${getDateOnlyTimestamp()} ${getTimeOnlyTimestamp()}: ${message}`
   );

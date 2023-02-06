@@ -45,16 +45,16 @@ export async function attemptConnection() {
     let buttonAcceptWorked = false;
     await Promise.all([
       page.waitForNavigation(),
-      new Promise(async (resolve) => {
-        await page.$eval(`#button_accept`, (element) => element.click());
+      new Promise<void>(async (resolve) => {
+        await page.$eval(`#button_accept`, (element: any) => element.click());
         buttonAcceptWorked = true;
         resolve();
       }),
-      new Promise((resolve) => {
+      new Promise<void>((resolve) => {
         setTimeout(async () => {
           if (!buttonAcceptWorked) {
             lib.log("Attempting 'Retry'...");
-            page.$eval(`#alertArea a`, (element) => element.click());
+            page.$eval(`#alertArea a`, (element: any) => element.click());
           }
           resolve();
         }, 5000);
@@ -78,7 +78,7 @@ export async function attemptConnection() {
       await (async () => new Promise((resolve) => setTimeout(resolve, 5000)))();
     }
     await browser.close();
-  } catch (e) {
+  } catch (e: any) {
     lib.log("Automatic login failed with error.");
     lib.log(e.message);
     await (async () => new Promise((resolve) => setTimeout(resolve, 5000)))();
